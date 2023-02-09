@@ -3,6 +3,7 @@ package token
 import (
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 // Character type for character
@@ -601,6 +602,9 @@ func IsNeedQuoted(value string) bool {
 		return true
 	}
 	for i, c := range value {
+		if shouldQuoteRune(c) {
+			return true
+		}
 		switch c {
 		case '#', '\\':
 			return true
@@ -611,6 +615,42 @@ func IsNeedQuoted(value string) bool {
 		}
 	}
 	return false
+}
+
+// shouldQuoteRune returns true if the rune should be quoted.
+// excludes all runes in the Basic Multilingual Plane and all Emoticons
+func shouldQuoteRune(r rune) bool {
+	if r < 0x1000 { // Basic Multilingual Plane
+		return false
+	}
+	if unicode.IsLetter(r) { // Letters in any language
+		return false
+	}
+	if r > 0x1F600 && r < 0x1F64F { // Emoticons
+		return false
+	}
+	if r > 0x1F300 && r < 0x1F5FF { // Misc Symbols and Pictographs
+		return false
+	}
+	if r > 0x1F680 && r < 0x1F6FF { // Transport and Map
+		return false
+	}
+	if r > 0x2600 && r < 0x26FF { // Misc symbols
+		return false
+	}
+	if r > 0x2700 && r < 0x27BF { // Dingbats
+		return false
+	}
+	if r > 0xFE00 && r < 0xFE0F { // Variation Selectors
+		return false
+	}
+	if r > 0x1F900 && r < 0x1F9FF { // Supplemental Symbols and Pictographs
+		return false
+	}
+	if r > 0x1F1E6 && r < 0x1F1FF { // Flags
+		return false
+	}
+	return true
 }
 
 // LiteralBlockHeader detect literal block scalar header
