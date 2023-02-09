@@ -638,6 +638,18 @@ func TestEncoder(t *testing.T) {
 			nil,
 		},
 
+		// Unicode
+		{
+			`v: "\ue0b6"` + "\n",
+			map[string]string{"v": "\ue0b6"},
+			nil,
+		},
+		{
+			`v: "\ue0b6 test"` + "\n",
+			map[string]string{"v": "\ue0b6 test"},
+			nil,
+		},
+
 		// time value
 		{
 			"v: 0001-01-01T00:00:00Z\n",
