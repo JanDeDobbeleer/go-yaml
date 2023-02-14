@@ -825,6 +825,14 @@ func TestDecoder(t *testing.T) {
 			map[string]string{"v": "hello\n...\nworld\n"},
 		},
 		{
+			"v: >\n  hello\n  ...\n  world\n",
+			map[string]string{"v": "hello ... world"},
+		},
+		{
+			"v:\n  \"hello\\\n  ...\\\n  world\n\"",
+			map[string]string{"v": "hello...world"},
+		},
+		{
 			"a: !!binary gIGC\n",
 			map[string]string{"a": "\x80\x81\x82"},
 		},

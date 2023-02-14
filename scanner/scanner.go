@@ -306,8 +306,14 @@ func (s *Scanner) scanDoubleQuote(ctx *Context) (tk *token.Token, pos int) {
 		c := src[idx]
 		pos = idx + 1
 		ctx.addOriginBuf(c)
+		var nextChar rune
+		if idx+1 < size {
+			nextChar = src[idx+1]
+		}
 		if s.isNewLineChar(c) {
-			value = append(value, ' ')
+			if nextChar != '"' {
+				value = append(value, ' ')
+			}
 			isFirstLineChar = true
 			isNewLine = true
 			s.progressLine(ctx)
@@ -316,8 +322,14 @@ func (s *Scanner) scanDoubleQuote(ctx *Context) (tk *token.Token, pos int) {
 			continue
 		} else if c == '\\' {
 			isFirstLineChar = false
-			if idx+1 < size {
-				nextChar := src[idx+1]
+			if nextChar != 0 {
+				// we need to treat this as a newline immediately and ignore the \ character
+				if s.isNewLineChar(nextChar) {
+					isFirstLineChar = true
+					idx++
+					ctx.addOriginBuf(nextChar)
+					continue
+				}
 				switch nextChar {
 				case 'b':
 					ctx.addOriginBuf(nextChar)
