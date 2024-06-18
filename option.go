@@ -162,6 +162,14 @@ func JSON() EncodeOption {
 	}
 }
 
+// QuoteStrings quote all strings
+func QuoteStrings() EncodeOption {
+	return func(e *Encoder) error {
+		e.isJSONStyle = true
+		return nil
+	}
+}
+
 // MarshalAnchor call back if encoder find an anchor during encoding
 func MarshalAnchor(callback func(*ast.AnchorNode, interface{}) error) EncodeOption {
 	return func(e *Encoder) error {
