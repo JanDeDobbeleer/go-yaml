@@ -670,7 +670,7 @@ func isTimestamp(value string) bool {
 
 // IsNeedQuoted checks whether the value needs quote for passed string or not
 func IsNeedQuoted(value string) bool {
-	if value == "" || value == "~" {
+	if value == "" || value == "~" || value == "-" {
 		return true
 	}
 	if _, exists := reservedEncKeywordMap[value]; exists {
